@@ -1,0 +1,50 @@
+{
+  "author": "Patrick Camacho <patrick@daftdevelopers.com>",
+  "name": "flooring-cli",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "index.js",
+  "engines": {
+    "yarn": ">=0.24.5",
+    "node": "^8.1.0"
+  },
+  "bin": {
+    "flooring": "./index.js"
+  },
+  "config": {
+    "tracked_js": "git ls-files --exclude-standard -o -c | grep \".*\\.js$\""
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon --watch package.json --watch src",
+    "test": "jest",
+    "docs": "node ./scripts/docs",
+    "lint": "eval \"$npm_package_config_tracked_js\" | xargs eslint --fix",
+    "format": "eval \"$npm_package_config_tracked_js\" | xargs prettier --single-quote --trailing-comma es5 --write",
+    "precommit": "lint-staged && yarn docs",
+    "prepush": "yarn test",
+    "postmerge": "git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep --quiet package.json && yarn"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --single-quote --trailing-comma es5 --write",
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "jest": "^20.0.4",
+    "lint-staged": "^3.6.1",
+    "markdown-magic": "^0.1.17",
+    "nodemon": "^1.11.0",
+    "prettier": "^1.4.4"
+  },
+  "optionalDependencies": {
+    "husky": "^0.13.4"
+  },
+  "dependencies": {
+    "inquirer": "^3.1.0",
+    "mathjs": "^3.13.3"
+  }
+}
