@@ -1,10 +1,10 @@
-const { unit } = require('mathjs');
+const { unit, round } = require('mathjs');
 
 function convertInput(input) {
   const output = {};
 
   Object.keys(input).forEach(v => {
-    output[v] = unit(input[v]).toNumber('in');
+    output[v] = round(unit(input[v]).toNumber('in'), 3);
   });
 
   return output;
