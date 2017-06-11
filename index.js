@@ -20,7 +20,7 @@ inquirer
     {
       name: 'measurements.wallGap',
       default: '0.5 in',
-      message: 'How large are the floor gaps?',
+      message: 'How large are the wall gaps?',
       validate: validateFormat,
     },
     {
