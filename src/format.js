@@ -1,11 +1,16 @@
-const { unit, round } = require('mathjs');
+const { round } = require('mathjs');
+
+function formatInches(value) {
+  const roundedValue = round(value, 3);
+  return [roundedValue, roundedValue === 1 ? 'inch' : 'inches'].join(' ');
+}
 
 function formatWholeBoards(boards) {
   return `${boards} whole board${boards === 1 ? '' : 's'}`;
 }
 
 function formatPartialBoard(remainder) {
-  return `${unit(round(remainder, 3), 'inches').toString()} of one board`;
+  return `${formatInches(remainder)} of one board`;
 }
 
 function formatBoardSize(size, boardSize) {
@@ -25,6 +30,7 @@ function formatHeader(str) {
 function formatInstructions(order, { boardSize }) {
   return [
     formatHeader('Instructions'),
+    '(Starting from the corner)',
     ...order.map((v, i) => `${i + 1}. Lay ${formatBoardSize(v, boardSize)}`),
   ].join('\n');
 }
@@ -62,6 +68,6 @@ module.exports = function formatCalculation({
     formatSupplies(order, measurements),
     formatInstructions(order, measurements),
   ]
-    .filter(str => !!str.trim().length)
+    .filter(str => !!str && !!str.trim().length)
     .join('\n');
 };

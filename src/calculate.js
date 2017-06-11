@@ -36,8 +36,8 @@ module.exports = function calculateSize(answers) {
     let lastBoard = remainder;
 
     do {
-      lastBoard += 0.125;
-      firstBoard -= 0.125;
+      lastBoard += 0.0625;
+      firstBoard -= 0.0625;
     } while (lastBoard < minBoardSize);
 
     order.push(firstBoard, (numberOfWholeBoards - 1) * boardSize, lastBoard);

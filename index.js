@@ -1,7 +1,19 @@
 #! /usr/bin/env node
 const inquirer = require('inquirer');
+const { unit } = require('mathjs');
 const calculateSize = require('./src/calculate');
 const formatMessage = require('./src/format');
+
+function validateFormat(v) {
+  if (!v || !v.trim().length) return 'Enter a value';
+
+  try {
+    unit(v).toNumber('in');
+    return true;
+  } catch (err) {
+    return 'Please enter a valid format syntax - e.g. "10 in"';
+  }
+}
 
 inquirer
   .prompt([
@@ -9,6 +21,7 @@ inquirer
       name: 'measurements.wallGap',
       default: '0.5 in',
       message: 'How large are the floor gaps?',
+      validate: validateFormat,
     },
     {
       name: 'dimension',
@@ -23,6 +36,7 @@ inquirer
         `How ${dimension === 'width'
           ? 'wide'
           : 'long'} is the floor? (include unit)`,
+      validate: validateFormat,
     },
     {
       name: 'measurements.boardSize',
@@ -30,11 +44,13 @@ inquirer
         `How ${dimension === 'width'
           ? 'wide'
           : 'long'} is the board? (include unit)`,
+      validate: validateFormat,
     },
     {
       name: 'measurements.minBoardSize',
       message: ({ dimension }) =>
-        `What is the minimum ${dimension} for a board (include unit)?`,
+        `What is the minimum ${dimension} for a board? (include unit)`,
+      validate: validateFormat,
     },
   ])
   .then(calculateSize)
