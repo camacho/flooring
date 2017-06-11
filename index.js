@@ -57,4 +57,5 @@ inquirer
   .then(formatMessage)
   .then(str => {
     console.log(str);
+    console.log('');
   });

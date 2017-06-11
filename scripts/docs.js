@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const execSync = require('child_process').execSync;
 const markdownMagic = require('markdown-magic');
+const INSTALLCMD = require('markdown-magic-install-command');
 
 const rootDir = path.resolve(__dirname, '..');
 const markdownPaths = [`${rootDir}/**.md`, `!${rootDir}/node_modules/**`];
@@ -9,6 +10,7 @@ const markdownPaths = [`${rootDir}/**.md`, `!${rootDir}/node_modules/**`];
 // Add any configurations here
 const config = {
   transforms: {
+    INSTALLCMD,
     ENGINES: () => {
       const { engines } = JSON.parse(
         fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8')

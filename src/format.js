@@ -1,4 +1,5 @@
 const { round } = require('mathjs');
+const chalk = require('chalk');
 
 function formatInches(value) {
   const roundedValue = round(value, 3);
@@ -6,11 +7,11 @@ function formatInches(value) {
 }
 
 function formatWholeBoards(boards) {
-  return `${boards} whole board${boards === 1 ? '' : 's'}`;
+  return `${chalk.bold(boards)} whole board${boards === 1 ? '' : 's'}`;
 }
 
 function formatPartialBoard(remainder) {
-  return `${formatInches(remainder)} of one board`;
+  return `${chalk.bold(formatInches(remainder))} of one board`;
 }
 
 function formatBoardSize(size, boardSize) {
@@ -24,13 +25,12 @@ function formatDivider(str) {
 }
 
 function formatHeader(str) {
-  return ['', str, formatDivider('-')].join('\n');
+  return ['', chalk.bold(str), formatDivider('-')].join('\n');
 }
 
 function formatInstructions(order, { boardSize }) {
   return [
-    formatHeader('Instructions'),
-    '(Starting from the corner)',
+    formatHeader('Instructions (starting from the corner)'),
     ...order.map((v, i) => `${i + 1}. Lay ${formatBoardSize(v, boardSize)}`),
   ].join('\n');
 }
@@ -47,14 +47,16 @@ function formatSupplies(order, { boardSize }) {
 function formatError(warn) {
   if (!warn) return;
 
-  return [
-    formatDivider('-'),
-    'The flooring can not be laid in',
-    'accordance with the requirements',
-    'This is the closest implementation we',
-    'were able to calculate',
-    formatDivider('-'),
-  ].join('\n');
+  return chalk.yellow(
+    [
+      formatDivider('-'),
+      'The flooring can not be laid in',
+      'accordance with the requirements',
+      'This is the closest implementation we',
+      'were able to calculate',
+      formatDivider('-'),
+    ].join('\n')
+  );
 }
 
 module.exports = function formatCalculation({
