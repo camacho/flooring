@@ -15,7 +15,7 @@ function formatPartialBoard(remainder) {
 }
 
 function formatBoardSize(size, boardSize) {
-  return size % boardSize === 0
+  return size % boardSize < 1
     ? formatWholeBoards(size / boardSize)
     : formatPartialBoard(size);
 }
