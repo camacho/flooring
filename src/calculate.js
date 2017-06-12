@@ -10,17 +10,58 @@ function convertInput(input) {
   return output;
 }
 
-module.exports = function calculateSize(answers) {
-  const measurements = convertInput(answers.measurements);
+function getRandomIntInclusive(_min, _max) {
+  const min = Math.ceil(_min);
+  const max = Math.floor(_max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-  const { wallGap, floorSize, boardSize, minBoardSize } = measurements;
+function calculateLength({
+  wallGap,
+  floorSize,
+  boardSize,
+  minBoardSize,
+  step,
+}) {
+  const order = [];
+  let warn = false;
+
+  const size = floorSize - wallGap * 2;
+  let numberOfWholeBoards = Math.floor(size / boardSize);
+  let remainder = round(size % boardSize, 3);
+
+  if ((boardSize + remainder) / 2 < minBoardSize) {
+    order.push(numberOfWholeBoards * boardSize, remainder);
+    warn = true;
+  } else if (numberOfWholeBoards === 0) {
+    order.push(remainder);
+  } else {
+    if (Math.floor(remainder / 2) < minBoardSize) {
+      remainder += boardSize;
+      numberOfWholeBoards--;
+    }
+
+    const wiggleRoom = remainder - 2 * minBoardSize;
+    const maxWiggle = Math.floor(wiggleRoom / step);
+    const multiplier = getRandomIntInclusive(1, maxWiggle);
+    const adjustment = minBoardSize + multiplier * step;
+
+    const firstBoard = adjustment;
+    const lastBoard = size - adjustment - numberOfWholeBoards * boardSize;
+
+    order.push(firstBoard, numberOfWholeBoards * boardSize, lastBoard);
+  }
+
+  return { order, warn };
+}
+
+function calculateWidth({ wallGap, floorSize, boardSize, minBoardSize, step }) {
+  const order = [];
+  let warn = false;
 
   const size = floorSize - wallGap * 2;
   const numberOfWholeBoards = Math.floor(size / boardSize);
   const remainder = size % boardSize;
-
-  const order = [];
-  let warn = false;
 
   if (remainder === 0) {
     order.push(size);
@@ -30,23 +71,30 @@ module.exports = function calculateSize(answers) {
     const offset = remainder / 2;
     order.push(offset, (numberOfWholeBoards - 1) * boardSize, offset);
   } else {
-    warn = true;
-
     let firstBoard = boardSize;
     let lastBoard = remainder;
 
     do {
-      lastBoard += 0.0625;
-      firstBoard -= 0.0625;
+      lastBoard += step;
+      firstBoard -= step;
     } while (lastBoard < minBoardSize);
+
+    warn = firstBoard < minBoardSize;
 
     order.push(firstBoard, (numberOfWholeBoards - 1) * boardSize, lastBoard);
   }
 
-  return {
-    answers,
-    measurements,
-    order,
-    warn,
-  };
+  return { order, warn };
+}
+
+module.exports = function calculateSize(answers) {
+  const measurements = convertInput(answers.measurements);
+
+  if (answers.dimension === 'width') {
+    const { order, warn } = calculateWidth(measurements);
+    return { measurements, order, warn };
+  } else {
+    const { order, warn } = calculateLength(measurements);
+    return { measurements, order, warn };
+  }
 };

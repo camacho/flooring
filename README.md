@@ -38,5 +38,5 @@ From there, it will walk you through calculating how to setup your flooring.
 ## Engines
 <!-- AUTO-GENERATED-CONTENT:START (ENGINES) -->
 * **yarn**: >=0.24.5
-* **node**: ^8.1.0
+* **node**: ^8.0.0
 <!-- AUTO-GENERATED-CONTENT:END -->

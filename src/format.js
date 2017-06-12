@@ -59,12 +59,7 @@ function formatError(warn) {
   );
 }
 
-module.exports = function formatCalculation({
-  answers,
-  measurements,
-  order,
-  warn,
-}) {
+module.exports = function formatCalculation({ measurements, order, warn }) {
   return [
     formatError(warn),
     formatSupplies(order, measurements),
