@@ -1,7 +1,7 @@
 {
   "author": "Patrick Camacho <patrick@daftdevelopers.com>",
   "name": "flooring-cli",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "license": "MIT",
   "main": "index.js",
   "engines": {

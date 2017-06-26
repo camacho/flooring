@@ -24,33 +24,43 @@ function calculateLength({
   step,
 }) {
   const order = [];
-  let warn = false;
 
   const size = floorSize - wallGap * 2;
   let numberOfWholeBoards = Math.floor(size / boardSize);
-  let remainder = round(size % boardSize, 3);
+  let extraSpace = round(size % boardSize, 3);
 
-  if ((boardSize + remainder) / 2 < minBoardSize) {
-    order.push(numberOfWholeBoards * boardSize, remainder);
-    warn = true;
-  } else if (numberOfWholeBoards === 0) {
-    order.push(remainder);
-  } else {
-    if (Math.floor(remainder / 2) < minBoardSize) {
-      remainder += boardSize;
-      numberOfWholeBoards--;
-    }
-
-    const wiggleRoom = remainder - 2 * minBoardSize;
-    const maxWiggle = Math.floor(wiggleRoom / step);
-    const multiplier = getRandomIntInclusive(1, maxWiggle);
-    const adjustment = minBoardSize + multiplier * step;
-
-    const firstBoard = adjustment;
-    const lastBoard = size - adjustment - numberOfWholeBoards * boardSize;
-
-    order.push(firstBoard, numberOfWholeBoards * boardSize, lastBoard);
+  if (numberOfWholeBoards > 0) {
+    extraSpace += boardSize;
+    numberOfWholeBoards--;
   }
+
+  const warn = extraSpace < minBoardSize;
+
+  // board can be 0
+  // board can be min size to extra space - minimumSize
+  // board can be full length
+
+  // Figure out how many choices we have
+  const numberOfChoices =
+    2 + Math.floor((extraSpace - 2 * minBoardSize) / step);
+  const choice = getRandomIntInclusive(0, numberOfChoices);
+  let firstBoard;
+  let secondBoard;
+
+  if (choice === numberOfChoices) {
+    firstBoard = extraSpace;
+    secondBoard = 0;
+  } else if (choice === 0) {
+    firstBoard = 0;
+    secondBoard = extraSpace;
+  } else {
+    firstBoard = minBoardSize + step * choice;
+    secondBoard = extraSpace - firstBoard;
+  }
+
+  if (firstBoard) order.push(firstBoard);
+  if (numberOfWholeBoards) order.push(numberOfWholeBoards * boardSize);
+  if (secondBoard) order.push(secondBoard);
 
   return { order, warn };
 }
